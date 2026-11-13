@@ -29,3 +29,11 @@
     Fri Nov 13 08:06:18 UTC 2026
 
     Plik /tmp/notatnka.txt został zapisany w warstwie zapisywalnej kontenera, która jest zachowywana przy jego zatrzymaniu i restarcie, ale trwale usuwana podczas docker rm. Plik historia.txt przetrwał usunięcie obu kontenerów, ponieważ znajdował się w wolumenie breach-dane zarządzanym przez Dockera niezależnie od cyklu życia kontenerów. Lista wycieków również przetrwałaby docker rm ponieważ jest podłączona z dysku hosta za pomocą bind mount, więc fizycznie istnieje w systemie plików hosta.
+
+10.
+
+Reguły zapory sieciowej (firewall / iptables / ACL): gdy dostęp do bazy danych lub zewnętrznego serwisu jest filtrowany na poziomie warstwy sieciowej po konkretnym adresie źródłowym IP.
+
+Starsze (legacy) oprogramowanie i certyfikaty: gdy aplikacja ma wpisany adres IP na sztywno w plikach konfiguracyjnych, nie obsługuje nazw domenowych lub używa certyfikatów TLS wystawionych wyłącznie na adres IP.
+
+Integracja z siecią zewnętrzną (np. macvlan/ipvlan): gdy kontener jest podłączony bezpośrednio do fizycznej sieci LAN/VLAN i jego adres nie może kolidować z pulą lokalnego serwera DHCP.
