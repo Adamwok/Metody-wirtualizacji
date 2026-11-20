@@ -1,35 +1,48 @@
+import os
 import re
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+import psycopg2
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:8080"])
 
-def load_hashes(path="/app/data/leaked-sha1.txt"):
-    with open(path, "r", encoding="utf-8") as f:
-        return {line.strip().lower() for line in f if line.strip()}
+def connect():
+    return psycopg2.connect(
+        host=os.environ["DB_HOST"],
+        dbname=os.environ["DB_NAME"],
+        user=os.environ["DB_USER"],
+        password=os.environ["DB_PASSWORD"],
+    )
 
-KNOWN_HASHES = load_hashes()
-print(f"Wczytano {len(KNOWN_HASHES)} hashy z /app/data/leaked-sha1.txt")
+conn = connect()
+with conn.cursor() as cur:
+    cur.execute("SELECT count(*) FROM leaked_hashes")
+    print(f"W bazie jest {cur.fetchone()[0]} hashy", flush=True)
+conn.close()
 
 @app.post("/check")
 def check():
     data = request.get_json(silent=True) or {}
-    h = data.get("hash")
-    if not h or not isinstance(h, str):
-        return jsonify({"error": "Brak pola hash"}), 400
+    if "hash" not in data:
+        return jsonify({"error": "brak pola 'hash'"}), 400
 
-    h = h.strip().lower()
+    h = str(data["hash"]).lower()
     if not re.fullmatch(r"[0-9a-f]{40}", h):
-        return jsonify({"error": "Nieprawidlowy format SHA-1"}), 400
+        return jsonify({"error": "pole 'hash' musi być skrótem SHA-1 (40 znaków hex)"}), 400
 
-    print(f"Sprawdzam skrot: {h[:5]}...")
-    found = h in KNOWN_HASHES
+    print(f"check: hash={h[:5]}...", flush=True)
+
+    conn = connect()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT EXISTS (SELECT 1 FROM leaked_hashes WHERE hash = %s)", (h,))
+            found = cur.fetchone()[0]
+    finally:
+        conn.close()
     return jsonify({"found": found})
-
+    
 @app.get("/health")
 def health():
     return jsonify({"status": "ok"})
-
+    
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
