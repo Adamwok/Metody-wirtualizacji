@@ -1,17 +1,18 @@
 # 1.
 
- ✔ Image breach-checker-frontend       Built                            3.6s
- ✔ Image breach-checker-backend        Built                            3.6s
+ ✔ Image breach-checker-frontend       Built                            2.9s
+ ✔ Image breach-checker-backend        Built                            2.9s
  ✔ Network breach-checker_default      Created                          0.1s
+ ✔ Volume breach-checker_pgdata        Created                          0.0s
  ✔ Container breach-checker-db-1       Healthy                          6.6s
- ✔ Container breach-checker-backend-1  Started                          6.7s
- ✔ Container breach-checker-frontend-1 Started                          6.9s
+ ✔ Container breach-checker-backend-1  Healthy                         12.2s
+ ✔ Container breach-checker-frontend-1 Started                         12.3s
 
  docker compose ps
-NAME                        IMAGE                     COMMAND                  SERVICE    CREATED              STATUS                        PORTS
-breach-checker-backend-1    breach-checker-backend    "python app.py"          backend    About a minute ago   Up About a minute (healthy)   5000/tcp
-breach-checker-db-1         postgres:16-alpine        "docker-entrypoint.s…"   db         About a minute ago   Up About a minute (healthy)   5432/tcp
-breach-checker-frontend-1   breach-checker-frontend   "/docker-entrypoint.…"   frontend   About a minute ago   Up About a minute             0.0.0.0:8080->80/tcp, [::]:8080->80/tcp
+NAME                        IMAGE                     COMMAND                  SERVICE    CREATED          STATUS                    PORTS
+breach-checker-backend-1    breach-checker-backend    "python app.py"          backend    54 seconds ago   Up 46 seconds (healthy)   5000/tcp
+breach-checker-db-1         postgres:16-alpine        "docker-entrypoint.s…"   db         54 seconds ago   Up 52 seconds (healthy)   5432/tcp
+breach-checker-frontend-1   breach-checker-frontend   "/docker-entrypoint.…"   frontend   53 seconds ago   Up 40 seconds             0.0.0.0:8080->80/tcp, [::]:8080->80/tcp
 
 # 2.
 
